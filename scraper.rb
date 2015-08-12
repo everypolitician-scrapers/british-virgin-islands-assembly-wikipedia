@@ -105,7 +105,7 @@ terms = {
   district_top_row: [ 2011, 2007 ],
   district_top_row_2003: [ 2003, 1999, 1995 ],
   polling_divisions_top_row: [ 1990, 1986 ],
-  district_grid: [ 1983, 1979, 1975 ],
+  district_grid: [ 1983, 1979, 1975, 1971 ],
   at_large_bold: [ 2011, 2007, 2003, 1999, 1995 ],
 }
 

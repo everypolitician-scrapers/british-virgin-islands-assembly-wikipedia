@@ -109,14 +109,26 @@ terms = {
   at_large_bold: [ 2011, 2007, 2003, 1999, 1995 ],
 }
 
+def area_from(str)
+  return { area_id: 'none', area: 'At large' } if str.downcase == 'at large'
+
+  if str[/^(\d)[snrt][tdh] District/]
+    id = $1
+  elsif str[/^(\w+) Electoral District/i]
+    id = %w(First Second Third Fourth Fifth Sixth Seventh Eighth Ninth).find_index($1) + 1
+  else 
+    raise "Odd area: #{str}"
+  end
+  return { area_id: id, area: "District #{id}" }
+end
+
+
 terms.each do |meth, ts|
   ts.each do |t|
     url = "https://en.wikipedia.org/wiki/British_Virgin_Islands_general_election,_%s" % t
     data = Parser.new(url: url).send(meth).map { |m| 
-      m.merge(term: t, source: url, id: id_for(m)) 
+      m.merge(area_from(m[:area])).merge(term: t, source: url, id: id_for(m)) 
     }
-    data.find_all { |m| m[:party][/[0-9]/] }.each { |m| puts m.to_s.magenta }
-    puts data
     ScraperWiki.save_sqlite([:id, :area, :term], data)
   end
 end

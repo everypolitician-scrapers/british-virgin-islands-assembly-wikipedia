@@ -42,7 +42,6 @@ class Parser
   end
 
   def at_large_bold
-    binding.pry
     noko.xpath(".//table[.//th[2][contains(.,'Candidate')]]/tr[td[b]]").map do |tr|
       tds = tr.css('td')
       {
@@ -61,19 +60,18 @@ def id_for(m)
 end
 
 terms = {
-  district_top_row: [ 2011 ],
-  at_large_bold:    [ 2011 ],
+  district_top_row: [ 2011, 2007 ],
+  at_large_bold:    [ 2011, 2007 ],
 }
 
 terms.each do |meth, ts|
   ts.each do |t|
     url = "https://en.wikipedia.org/wiki/British_Virgin_Islands_general_election,_%s" % t
-    warn url
     data = Parser.new(url: url).send(meth).map { |m| 
       m.merge(term: t, source: url, id: id_for(m)) 
     }
     data.find_all { |m| m[:party][/[0-9]/] }.each { |m| puts m.to_s.magenta }
     puts data
-    # ScraperWiki.save_sqlite([:id, :area, :term], data)
+    ScraperWiki.save_sqlite([:id, :area, :term], data)
   end
 end

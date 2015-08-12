@@ -151,6 +151,7 @@ end
 
 terms.each do |meth, ts|
   ts.each do |t|
+    next unless t == 2015
     url = "https://en.wikipedia.org/wiki/British_Virgin_Islands_general_election,_%s" % t
     data = Parser.new(url: url).send(meth).map { |m| 
       m.merge(area_from(m[:area])).merge(term: t, source: url, id: id_for(m)) 

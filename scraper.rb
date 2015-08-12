@@ -41,6 +41,30 @@ class Parser
     end
   end
 
+  def district_top_row_2015
+    noko.xpath(".//table[.//caption[contains(.,'District')]]/tr[td][1]").map do |tr|
+      tds = tr.css('td')
+      {
+        name: tds[0].text.strip,
+        wikipedia__en: tds[0].xpath('.//a[not(@class="new")]/@title').text.strip,
+        area: tr.parent.css('caption').text[/(\w+) District/],
+        party: tds[1].text.strip,
+      }
+    end
+  end
+
+  def at_large_2015
+    noko.xpath(".//table[.//caption[contains(.,'At large')]]/tr[td[b]]").map do |tr|
+      tds = tr.css('td')
+      {
+        name: tds[0].text.strip,
+        wikipedia__en: tds[0].xpath('.//a[not(@class="new")]/@title').text.strip,
+        area: "At large",
+        party: tds[1].text.strip,
+      }
+    end
+  end
+
   def polling_divisions_top_row
     noko.xpath(".//table[.//th[1][contains(.,'Candidate')]]/tr[td][2]").map do |tr|
       tds = tr.css('td')
@@ -104,9 +128,11 @@ end
 terms = {
   district_top_row: [ 2011, 2007 ],
   district_top_row_2003: [ 2003, 1999, 1995 ],
+  district_top_row_2015: [ 2015 ],
   polling_divisions_top_row: [ 1990, 1986 ],
   district_grid: [ 1983, 1979, 1975, 1971 ],
   at_large_bold: [ 2011, 2007, 2003, 1999, 1995 ],
+  at_large_2015: [ 2015 ],
 }
 
 def area_from(str)

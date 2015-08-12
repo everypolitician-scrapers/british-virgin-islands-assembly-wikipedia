@@ -75,8 +75,8 @@ end
 
 terms = {
   district_top_row: [ 2011, 2007 ],
-  district_top_row_2003: [ 2003 ],
-  at_large_bold:    [ 2011, 2007, 2003 ],
+  district_top_row_2003: [ 2003, 1999 ],
+  at_large_bold:    [ 2011, 2007, 2003, 1999 ],
 }
 
 terms.each do |meth, ts|

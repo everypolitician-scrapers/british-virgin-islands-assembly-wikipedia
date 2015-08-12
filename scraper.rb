@@ -41,8 +41,22 @@ class Parser
     end
   end
 
+  def district_top_row_2003
+    noko.xpath(".//table[.//th[1][contains(.,'Candidate')]]/tr[td][1]").map do |tr|
+      tds = tr.css('td')
+      winner = tds[0].text.match(/(.*) \((.*)\)/) or raise "Odd format: #{tds[0].text}"
+      name, party = winner.captures
+      {
+        name: name,
+        wikipedia__en: tds[0].xpath('.//a[not(@class="new")]/@title').text.strip,
+        area: tr.xpath('preceding::p/b').last.text,
+        party: party,
+      }
+    end
+  end
+
   def at_large_bold
-    noko.xpath(".//table[.//th[2][contains(.,'Candidate')]]/tr[td[b]]").map do |tr|
+    noko.xpath(".//table[.//th[1][contains(.,'Position')]]/tr[td[b]]").map do |tr|
       tds = tr.css('td')
       {
         name: tds[1].text.tidy,
@@ -61,7 +75,8 @@ end
 
 terms = {
   district_top_row: [ 2011, 2007 ],
-  at_large_bold:    [ 2011, 2007 ],
+  district_top_row_2003: [ 2003 ],
+  at_large_bold:    [ 2011, 2007, 2003 ],
 }
 
 terms.each do |meth, ts|
